@@ -16,7 +16,7 @@ The main goals are:
 
 A typical reproducible project should look like this:
 
-```
+```text
 project/
 │
 ├── renv/
@@ -30,18 +30,15 @@ project/
 └── README.md
 ```
 
-```
-
 Main components:
 
-| Component | Purpose |
-|-----------|---------|
-| `renv.lock` | Snapshot of exact package versions |
-| `renv/` | Local project package library |
-| `.Rprofile` | Auto-activates renv |
-| GitHub repo | Version control + collaboration |
-| RMarkdown | Reproducible reports |
-```
+| Component    | Purpose                            |
+|--------------|------------------------------------|
+| `renv.lock`  | Snapshot of exact package versions |
+| `renv/`      | Local project package library      |
+| `.Rprofile`  | Auto-activates renv                |
+| GitHub repo  | Version control + collaboration    |
+| RMarkdown    | Reproducible reports               |
 
 ---
 
@@ -62,6 +59,7 @@ Suppose:
 Inside the project:
 
 ```r
+# Environment: R console / RStudio console
 install.packages("renv")
 renv::init()
 ```
@@ -77,6 +75,7 @@ This:
 Example:
 
 ```r
+# Environment: R console / RStudio console
 install.packages(c(
   "rmarkdown",
   "knitr",
@@ -86,12 +85,12 @@ install.packages(c(
 ))
 ```
 
-
 ### Step 3 — Snapshot Environment
 
 Very important:
 
 ```r
+# Environment: R console / RStudio console
 renv::snapshot()
 ```
 
@@ -109,6 +108,7 @@ into:
 ### Step 4 — Verify Status
 
 ```r
+# Environment: R console / RStudio console
 renv::status()
 ```
 
@@ -120,7 +120,8 @@ Create `.gitignore`
 
 Recommended:
 
-```
+```gitignore
+# Environment: .gitignore file
 .Rhistory
 .RData
 .Ruserdata
@@ -144,6 +145,7 @@ These are essential.
 ### Step 6 — Commit to GitHub
 
 ```bash
+# Environment: Linux / macOS / Windows Git Bash terminal
 git init
 git add .
 git commit -m "Initial reproducible project"
@@ -175,6 +177,7 @@ Goal:
 ### Option A — Terminal
 
 ```bash
+# Environment: Linux / macOS / Windows Git Bash terminal
 git clone REPO_URL
 ```
 
@@ -271,6 +274,7 @@ Possible issues:
 When restoring:
 
 ```r
+# Environment: R console / RStudio console
 renv::restore()
 ```
 
@@ -319,6 +323,7 @@ Especially important for:
 Inside project:
 
 ```r
+# Environment: R console / RStudio console
 install.packages("renv")
 renv::restore()
 ```
@@ -402,6 +407,7 @@ More advanced.
 For PDF generation:
 
 ```r
+# Environment: R console / RStudio console
 install.packages("tinytex")
 tinytex::install_tinytex()
 ```
@@ -430,6 +436,7 @@ Common errors:
 Use:
 
 ```yaml
+# Environment: YAML front matter in .Rmd file
 output:
   pdf_document:
     latex_engine: xelatex
@@ -479,12 +486,14 @@ Most reproducible.
 Example:
 
 ```r
+# Environment: R console / RStudio console
 rmarkdown::render("report.Rmd")
 ```
 
 Specific output:
 
 ```r
+# Environment: R console / RStudio console
 rmarkdown::render(
   "report.Rmd",
   output_format = "pdf_document"
@@ -498,6 +507,7 @@ rmarkdown::render(
 YAML:
 
 ```yaml
+# Environment: YAML front matter in .Rmd file
 output:
   html_document: default
   pdf_document: default
@@ -507,6 +517,7 @@ output:
 Then:
 
 ```r
+# Environment: R console / RStudio console
 rmarkdown::render("report.Rmd", output_format = "all")
 ```
 
@@ -517,6 +528,7 @@ rmarkdown::render("report.Rmd", output_format = "all")
 Lower-level approach:
 
 ```r
+# Environment: R console / RStudio console
 knitr::knit("report.Rmd")
 ```
 
@@ -531,18 +543,21 @@ Usually not enough alone for HTML/PDF.
 **Linux:**
 
 ```bash
+# Environment: Linux terminal (bash)
 Rscript -e "rmarkdown::render('report.Rmd')"
 ```
 
 **Windows CMD:**
 
 ```cmd
+REM Environment: Windows Command Prompt (CMD)
 Rscript -e "rmarkdown::render('report.Rmd')"
 ```
 
 **PowerShell:**
 
 ```powershell
+# Environment: Windows PowerShell
 Rscript -e "rmarkdown::render('report.Rmd')"
 ```
 
@@ -587,6 +602,7 @@ VS Code needs to know where R is installed.
 R is usually in `/usr/bin/R` or `/usr/local/bin/R`. Verify with:
 
 ```bash
+# Environment: Linux terminal (bash)
 which R
 ```
 
@@ -604,6 +620,7 @@ C:\Program Files\R\R-4.x.x\bin\x64\R.exe
 2. Add or modify:
 
 ```json
+# Environment: VS Code settings.json
 {
   "r.rpath.windows": "C:\\Program Files\\R\\R-4.5.3\\bin\\x64\\R.exe",
   "r.rpath.linux": "/usr/bin/R",
@@ -633,6 +650,7 @@ The **R Markdown** extension adds a **Knit** button to the editor toolbar when y
 - Ensure `rmarkdown` package is installed in R:
 
 ```r
+# Environment: R console / RStudio console
 install.packages("rmarkdown")
 ```
 
@@ -653,36 +671,42 @@ VS Code's integrated terminal (`Ctrl+`` ` or `View → Terminal`) is fully funct
 **Open an R session in the terminal:**
 
 ```bash
+# Environment: VS Code integrated terminal (Linux/macOS)
 R
 ```
 
 **Run R scripts directly:**
 
 ```bash
+# Environment: VS Code integrated terminal (any OS)
 Rscript analysis.R
 ```
 
 **Render RMarkdown from the terminal:**
 
 ```bash
+# Environment: VS Code integrated terminal (any OS)
 Rscript -e "rmarkdown::render('report.Rmd')"
 ```
 
 **Render specific output format:**
 
 ```bash
+# Environment: VS Code integrated terminal (any OS)
 Rscript -e "rmarkdown::render('report.Rmd', output_format = 'pdf_document')"
 ```
 
 **Render all formats defined in YAML:**
 
 ```bash
+# Environment: VS Code integrated terminal (any OS)
 Rscript -e "rmarkdown::render('report.Rmd', output_format = 'all')"
 ```
 
 **Generate markdown only (for GitHub):**
 
 ```bash
+# Environment: VS Code integrated terminal (any OS)
 Rscript -e "rmarkdown::render('report.Rmd', output_format = 'github_document')"
 ```
 
@@ -693,18 +717,21 @@ The integrated terminal respects the project's `.Rprofile`, so `renv` is automat
 **Restore environment:**
 
 ```bash
+# Environment: VS Code integrated terminal (any OS)
 Rscript -e "renv::restore()"
 ```
 
 **Snapshot environment:**
 
 ```bash
+# Environment: VS Code integrated terminal (any OS)
 Rscript -e "renv::snapshot()"
 ```
 
 **Check status:**
 
 ```bash
+# Environment: VS Code integrated terminal (any OS)
 Rscript -e "renv::status()"
 ```
 
@@ -715,6 +742,7 @@ You can create VS Code tasks to automate rendering with a keyboard shortcut.
 Create `.vscode/tasks.json` in your project:
 
 ```json
+# Environment: VS Code tasks.json configuration file
 {
   "version": "2.0.0",
   "tasks": [
@@ -767,6 +795,7 @@ Then run a task via `Ctrl+Shift+P` → `Tasks: Run Task` → select the task.
 Create `.vscode/settings.json` in your project for consistent settings across collaborators:
 
 ```json
+# Environment: VS Code settings.json configuration file
 {
   "r.rpath.linux": "/usr/bin/R",
   "r.rpath.windows": "C:\\Program Files\\R\\R-4.5.3\\bin\\x64\\R.exe",
@@ -831,6 +860,7 @@ Useful for GitHub README.
 YAML:
 
 ```yaml
+# Environment: YAML front matter in .Rmd file
 output:
   github_document: default
 ```
@@ -838,6 +868,7 @@ output:
 Then:
 
 ```r
+# Environment: R console / RStudio console
 rmarkdown::render("report.Rmd")
 ```
 
@@ -852,6 +883,7 @@ Produces:
 Most portable.
 
 ```yaml
+# Environment: YAML front matter in .Rmd file
 output:
   html_document:
     self_contained: true
@@ -928,18 +960,21 @@ Linux and Windows differ greatly here.
 **BAD:**
 
 ```r
+# Environment: R console / RStudio console
 read.csv("C:/Users/...")
 ```
 
 **GOOD:**
 
 ```r
+# Environment: R console / RStudio console
 read.csv("data/file.csv")
 ```
 
 Or:
 
 ```r
+# Environment: R console / RStudio console
 here::here("data", "file.csv")
 ```
 
@@ -952,6 +987,7 @@ here::here("data", "file.csv")
 Example:
 
 ```r
+# Environment: R console / RStudio console
 here::here("output", "plot.png")
 ```
 
@@ -964,12 +1000,14 @@ Very important for GitHub collaboration.
 Whenever packages change:
 
 ```r
+# Environment: R console / RStudio console
 renv::snapshot()
 ```
 
 Then commit:
 
 ```bash
+# Environment: Linux / macOS / Windows Git Bash terminal
 git add renv.lock
 git commit -m "Update packages"
 ```
@@ -981,6 +1019,7 @@ git commit -m "Update packages"
 Always use:
 
 ```r
+# Environment: R console / RStudio console
 renv::snapshot()
 ```
 
@@ -991,6 +1030,7 @@ renv::snapshot()
 ### On Linux
 
 ```r
+# Environment: R console / RStudio console (on Linux)
 renv::snapshot()
 ```
 
@@ -999,10 +1039,12 @@ Push to GitHub.
 ### On Windows
 
 ```bash
+# Environment: Linux / macOS / Windows Git Bash terminal
 git pull
 ```
 
 ```r
+# Environment: R console / RStudio console (on Windows)
 renv::restore()
 ```
 
@@ -1027,6 +1069,7 @@ Possible differences:
 Set seeds:
 
 ```r
+# Environment: R console / RStudio console
 set.seed(123)
 ```
 
@@ -1045,12 +1088,14 @@ Document:
 Save:
 
 ```r
+# Environment: R console / RStudio console
 sessionInfo()
 ```
 
 or:
 
 ```r
+# Environment: R console / RStudio console
 devtools::session_info()
 ```
 
@@ -1098,6 +1143,7 @@ Document:
 ## 47. Recommended README Example
 
 ```markdown
+# Environment: README.md file (Markdown)
 # Project
 
 ## Restore environment
@@ -1133,12 +1179,14 @@ Useful for:
 ### Linux machine
 
 ```r
+# Environment: R console / RStudio console (on Linux)
 renv::snapshot()
 ```
 
 Commit:
 
 ```bash
+# Environment: Linux / macOS / Windows Git Bash terminal
 git add .
 git commit -m "update"
 git push
@@ -1147,6 +1195,7 @@ git push
 ### Windows machine
 
 ```r
+# Environment: R console / RStudio console (on Windows)
 install.packages("renv")
 renv::restore()
 

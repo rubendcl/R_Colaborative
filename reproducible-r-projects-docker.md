@@ -35,7 +35,7 @@ Docker is the **most reproducible** approach for R projects because it encapsula
 
 A typical reproducible R project with Docker looks like this:
 
-```
+```text
 project/
 │
 ├── .devcontainer/
@@ -60,6 +60,7 @@ project/
 ### 3.1 On Linux (Ubuntu/Debian)
 
 ```bash
+# Environment: Linux terminal (bash)
 # Update package index
 sudo apt update
 
@@ -104,6 +105,7 @@ docker run hello-world
 Open PowerShell as Administrator:
 
 ```powershell
+# Environment: Windows PowerShell (as Administrator)
 # Enable WSL
 wsl --install
 
@@ -117,6 +119,7 @@ wsl --status
 **Verify Docker installation:**
 
 ```powershell
+# Environment: Windows PowerShell
 docker --version
 docker run hello-world
 ```
@@ -124,6 +127,7 @@ docker run hello-world
 **Option B — Docker Engine via WSL 2 (without Docker Desktop)**
 
 ```powershell
+# Environment: Windows PowerShell (as Administrator)
 # Install Ubuntu WSL
 wsl --install -d Ubuntu
 
@@ -133,6 +137,7 @@ wsl --install -d Ubuntu
 ### 3.3 On macOS
 
 ```bash
+# Environment: macOS terminal (bash/zsh)
 # Option 1: Docker Desktop for Mac
 # Download from https://www.docker.com/products/docker-desktop/
 
@@ -149,6 +154,7 @@ docker run hello-world
 After installation, run this test:
 
 ```bash
+# Environment: Linux / macOS terminal, or Windows PowerShell
 docker run --rm hello-world
 ```
 
@@ -168,6 +174,7 @@ The `Dockerfile` is the heart of reproducibility. It defines the exact environme
 ### 4.1 Minimal Dockerfile for R
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 # Use a specific R version image (NOT "latest")
 FROM rocker/r-ver:4.5.3
 
@@ -201,6 +208,7 @@ CMD ["Rscript", "-e", "rmarkdown::render('report.Rmd')"]
 ### 4.2 Dockerfile with renv Integration
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 # Use specific R version
 FROM rocker/r-ver:4.5.3
 
@@ -242,6 +250,7 @@ CMD ["Rscript", "-e", "rmarkdown::render('report.Rmd')"]
 ### 4.3 Dockerfile with LaTeX for PDF Output
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 FROM rocker/r-ver:4.5.3
 
 # Install system dependencies including LaTeX
@@ -281,7 +290,8 @@ CMD ["Rscript", "-e", "rmarkdown::render('report.Rmd', output_format = 'pdf_docu
 
 Create `.dockerignore` to exclude unnecessary files from the Docker build context:
 
-```
+```dockerignore
+# Environment: .dockerignore file
 # R
 .Rhistory
 .RData
@@ -319,6 +329,7 @@ Thumbs.db
 ### 6.1 Build the Docker Image
 
 ```bash
+# Environment: Linux / macOS terminal, or Windows PowerShell
 # Build with a tag
 docker build -t my-r-project .
 
@@ -329,6 +340,7 @@ docker build --no-cache -t my-r-project .
 ### 6.2 Run the Container
 
 ```bash
+# Environment: Linux / macOS terminal, or Windows PowerShell
 # Run and render the report
 docker run --rm my-r-project
 
@@ -344,6 +356,7 @@ docker run --rm my-r-project Rscript -e "rmarkdown::render('report.Rmd', output_
 This allows you to edit files locally and run them in the container:
 
 ```bash
+# Environment: Linux / macOS terminal (bash)
 # Mount current directory to /project in container
 docker run --rm -v "$(pwd):/project" my-r-project Rscript -e "rmarkdown::render('report.Rmd')"
 ```
@@ -351,18 +364,21 @@ docker run --rm -v "$(pwd):/project" my-r-project Rscript -e "rmarkdown::render(
 **On Windows (PowerShell):**
 
 ```powershell
+# Environment: Windows PowerShell
 docker run --rm -v "${PWD}:/project" my-r-project Rscript -e "rmarkdown::render('report.Rmd')"
 ```
 
 **On Windows (CMD):**
 
 ```cmd
+REM Environment: Windows Command Prompt (CMD)
 docker run --rm -v "%CD%:/project" my-r-project Rscript -e "rmarkdown::render('report.Rmd')"
 ```
 
 ### 6.4 Get Output Files from Container
 
 ```bash
+# Environment: Linux / macOS terminal (bash)
 # Run and copy output to local machine
 docker run --rm -v "$(pwd)/output:/project/output" my-r-project
 ```
@@ -374,6 +390,7 @@ docker run --rm -v "$(pwd)/output:/project/output" my-r-project
 For more complex setups, use `docker-compose.yml`:
 
 ```yaml
+# Environment: docker-compose.yml configuration file
 version: '3.8'
 
 services:
@@ -392,6 +409,7 @@ services:
 Then run:
 
 ```bash
+# Environment: Linux / macOS terminal, or Windows PowerShell
 docker compose up
 ```
 
@@ -402,6 +420,7 @@ docker compose up
 ### Step 1 — On Linux (Source Machine)
 
 ```bash
+# Environment: Linux terminal (bash)
 # 1. Create project and set up renv
 # (see the companion guide: reproducible-r-projects-renv-github.md)
 
@@ -450,6 +469,7 @@ docker push ghcr.io/yourusername/my-r-project:latest
 ### Step 2 — On Windows (Target Machine)
 
 ```bash
+# Environment: Windows PowerShell or Git Bash
 # 1. Install Docker (see section 3.2)
 
 # 2. Get the Docker image
@@ -476,14 +496,15 @@ docker run --rm -it my-r-project R
 ### Step 3 — Verify Reproducibility
 
 ```bash
+# Environment: Linux / macOS terminal (bash)
 # Compare outputs between Linux and Windows
 # The outputs should be IDENTICAL
 
 # On Linux:
 docker run --rm -v "$(pwd)/output:/project/output" my-r-project
 
-# On Windows:
-docker run --rm -v "${PWD}/output:/project/output" my-r-project
+# On Windows (PowerShell):
+# docker run --rm -v "${PWD}/output:/project/output" my-r-project
 ```
 
 ---
@@ -507,6 +528,7 @@ The [Rocker Project](https://www.rocker-project.org/) provides pre-built Docker 
 ### Example: Using rocker/tidyverse
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 FROM rocker/tidyverse:4.5.3
 
 # Already includes: dplyr, ggplot2, tidyr, readr, purrr, stringr, etc.
@@ -522,6 +544,7 @@ CMD ["Rscript", "-e", "rmarkdown::render('report.Rmd')"]
 ### Example: Using rocker/verse (with LaTeX)
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 FROM rocker/verse:4.5.3
 
 # Already includes: R + tidyverse + LaTeX + rmarkdown
@@ -549,6 +572,7 @@ VS Code Dev Containers allow you to develop inside a Docker container seamlessly
 Create `.devcontainer/devcontainer.json`:
 
 ```json
+# Environment: VS Code devcontainer.json configuration file
 {
   "name": "R Reproducible Project",
   "build": {
@@ -602,6 +626,7 @@ Create `.devcontainer/devcontainer.json`:
 ### 11.1 Use renv Inside Docker
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 FROM rocker/r-ver:4.5.3
 
 # Install system deps
@@ -630,6 +655,7 @@ COPY . .
 Order your Dockerfile commands from **least to most frequently changing**:
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 # 1. Base image (rarely changes)
 FROM rocker/r-ver:4.5.3
 
@@ -651,12 +677,14 @@ This way, rebuilding is fast when only project files change.
 **BAD:**
 
 ```dockerfile
+# Environment: Dockerfile (build context) — BAD PRACTICE
 RUN R -e "install.packages(c('ggplot2', 'dplyr', 'tidyr'))"
 ```
 
 **GOOD (use renv.lock):**
 
 ```dockerfile
+# Environment: Dockerfile (build context) — GOOD PRACTICE
 COPY renv.lock ./
 RUN R -e "renv::restore()"
 ```
@@ -670,6 +698,7 @@ This ensures exact version reproducibility.
 ### 12.1 Docker Hub
 
 ```bash
+# Environment: Linux / macOS terminal, or Windows PowerShell
 # Login
 docker login
 
@@ -686,6 +715,7 @@ docker pull username/my-r-project:1.0
 ### 12.2 GitHub Container Registry (GHCR)
 
 ```bash
+# Environment: Linux / macOS terminal, or Windows PowerShell
 # Login to GHCR
 echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
 
@@ -702,6 +732,7 @@ docker pull ghcr.io/username/my-r-project:1.0
 ### 12.3 Save/Load as tar File
 
 ```bash
+# Environment: Linux / macOS terminal, or Windows PowerShell
 # Save (portable file)
 docker save my-r-project | gzip > my-r-project.tar.gz
 
@@ -731,6 +762,7 @@ Windows uses CRLF (`\r\n`) while Linux uses LF (`\n`). This can break R scripts.
 **Solution 1 — Configure Git:**
 
 ```bash
+# Environment: Linux / macOS / Windows Git Bash terminal
 # In your project
 git config core.autocrlf input
 ```
@@ -739,7 +771,8 @@ git config core.autocrlf input
 
 Create `.gitattributes` in your project root:
 
-```
+```gitattributes
+# Environment: .gitattributes file
 # Auto detect text files and force LF
 * text=auto eol=lf
 
@@ -762,6 +795,7 @@ Create `.gitattributes` in your project root:
 **Solution 3 — Convert in Dockerfile:**
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 RUN apt-get install -y dos2unix && \
     find /project -name "*.R" -o -name "*.Rmd" | xargs dos2unix
 ```
@@ -771,18 +805,21 @@ RUN apt-get install -y dos2unix && \
 **PowerShell:**
 
 ```powershell
+# Environment: Windows PowerShell
 docker run --rm -v "${PWD}:/project" my-r-project
 ```
 
 **CMD:**
 
 ```cmd
+REM Environment: Windows Command Prompt (CMD)
 docker run --rm -v "%CD%:/project" my-r-project
 ```
 
 **Git Bash (on Windows):**
 
 ```bash
+# Environment: Git Bash (on Windows)
 docker run --rm -v "/$PWD:/project" my-r-project
 ```
 
@@ -792,7 +829,7 @@ docker run --rm -v "/$PWD:/project" my-r-project
 
 ### 14.1 Project Structure
 
-```
+```text
 docker-r-project/
 │
 ├── .devcontainer/
@@ -815,6 +852,7 @@ docker-r-project/
 ### 14.2 Dockerfile
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 FROM rocker/verse:4.5.3
 
 # Install additional system dependencies
@@ -846,6 +884,7 @@ CMD ["Rscript", "-e", "rmarkdown::render('report.Rmd', output_format = 'all')"]
 ### 14.3 .devcontainer/devcontainer.json
 
 ```json
+# Environment: VS Code devcontainer.json configuration file
 {
   "name": "R Docker Project",
   "build": {
@@ -875,6 +914,7 @@ CMD ["Rscript", "-e", "rmarkdown::render('report.Rmd', output_format = 'all')"]
 ### 14.4 README.md
 
 ```markdown
+# Environment: README.md file (Markdown)
 # Docker R Reproducible Project
 
 ## Prerequisites
@@ -919,6 +959,7 @@ Reports will be generated in the `output/` directory.
 ### 15.1 Permission Denied
 
 ```bash
+# Environment: Linux terminal (bash)
 # Add user to docker group
 sudo usermod -aG docker $USER
 newgrp docker
@@ -927,7 +968,7 @@ newgrp docker
 ### 15.2 Docker Daemon Not Running
 
 ```bash
-# Linux
+# Environment: Linux terminal (bash)
 sudo systemctl start docker
 sudo systemctl enable docker
 
@@ -938,6 +979,7 @@ sudo systemctl enable docker
 ### 15.3 Out of Disk Space
 
 ```bash
+# Environment: Linux / macOS terminal, or Windows PowerShell
 # Clean unused images, containers, and volumes
 docker system prune -a --volumes
 ```
@@ -945,6 +987,7 @@ docker system prune -a --volumes
 ### 15.4 R Package Installation Fails in Docker
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 # Common fix: install system dependencies first
 RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
@@ -958,6 +1001,7 @@ RUN apt-get update && apt-get install -y \
 ### 15.5 LaTeX Errors in Docker
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 # Install full LaTeX distribution
 RUN apt-get update && apt-get install -y \
     texlive-xetex \
@@ -971,6 +1015,7 @@ RUN R -e "install.packages('tinytex'); tinytex::install_tinytex()"
 ### 15.6 Encoding Issues
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 # Set locale in Dockerfile
 RUN apt-get update && apt-get install -y locales && \
     locale-gen en_US.UTF-8 && \
@@ -983,6 +1028,7 @@ ENV LC_ALL=en_US.UTF-8
 ### 15.7 Slow Builds
 
 ```dockerfile
+# Environment: Dockerfile (build context)
 # Optimize layer caching: copy renv.lock before project files
 COPY renv.lock ./
 RUN R -e "renv::restore()"
@@ -1013,7 +1059,7 @@ COPY . .
 ## 17. CI/CD with Docker and GitHub Actions
 
 ```yaml
-# .github/workflows/render-report.yml
+# Environment: GitHub Actions workflow file (.github/workflows/render-report.yml)
 name: Render Report
 
 on:
@@ -1082,6 +1128,7 @@ jobs:
 ## 19. Quick Reference Commands
 
 ```bash
+# Environment: Linux / macOS terminal, or Windows PowerShell
 # Build
 docker build -t my-project .
 
