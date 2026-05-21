@@ -30,6 +30,8 @@ project/
 └── README.md
 ```
 
+```
+
 Main components:
 
 | Component | Purpose |
@@ -39,6 +41,7 @@ Main components:
 | `.Rprofile` | Auto-activates renv |
 | GitHub repo | Version control + collaboration |
 | RMarkdown | Reproducible reports |
+```
 
 ---
 
@@ -82,6 +85,7 @@ install.packages(c(
   "readr"
 ))
 ```
+
 
 ### Step 3 — Snapshot Environment
 
