@@ -360,6 +360,27 @@ This reads:
 
 and installs all packages.
 
+### Check Library Details
+
+To see a detailed overview of the project's library state — which packages are installed, which are used, and if anything needs to be synchronized:
+
+```r
+# Check if environment is in sync
+renv::status()
+
+# Show installed packages in the project library
+renv::dependencies()
+
+# Show detailed package status (installed vs used vs missing)
+renv::diagnostics()
+```
+
+| Command | What it shows |
+|---------|---------------|
+| `renv::status()` | Whether the project is in sync or needs updates |
+| `renv::dependencies()` | All R packages used in the project code |
+| `renv::diagnostics()` | Detailed report of installed, used, and missing packages |
+
 ---
 
 ## 13. Important Observation About Windows
@@ -502,6 +523,16 @@ Produces:
 - MD
 
 depending on YAML.
+
+> **⚠️ Important:** The Knit button runs the `.Rmd` in a separate R session. To guarantee that `renv` is activated (and the correct packages are found), add this **setup chunk** at the top of your `.Rmd` file:
+>
+> ````markdown
+> ```{r setup, include=FALSE}
+> source("renv/activate.R")
+> ```
+> ````
+>
+> This ensures `renv` is loaded before any packages are used, regardless of how the file is rendered.
 
 ---
 
@@ -690,7 +721,63 @@ If the Knit button is missing, you can still render via the command palette:
 
 This achieves the same result as clicking the Knit button.
 
-### 28.5 Using the VS Code Integrated Terminal for R
+### 28.5 Important: Does the VS Code Knit Button Activate renv?
+
+This is a critical question. The VS Code Knit button (from the R Markdown extension) runs `rmarkdown::render()` in a **separate R process** behind the scenes. Whether `renv` is activated depends on **where that R process starts**.
+
+**✅ When it works correctly:**
+
+If the R process is launched from the project's root directory (where `.Rprofile` lives), then `.Rprofile` is read, `renv` is activated, and packages are found in the `renv/library` folder. This is the expected behavior.
+
+**⚠️ When it might fail:**
+
+- If VS Code's integrated terminal is not open to the project root
+- If the extension launches R from a different working directory
+- If the `.Rprofile` file is missing or misconfigured
+
+**🔍 How to verify that renv is active when using the Knit button:**
+
+Add a temporary test chunk to your `.Rmd` file:
+
+````markdown
+```{r test-renv}
+# Check if renv is active
+renv::status()
+# Check where packages are being loaded from
+.libPaths()
+```
+````
+
+When you click Knit, the output should show:
+- `renv::status()` — confirms the project library is being used
+- `.libPaths()` — should include the `renv/library` path
+
+**🛡️ Best practice: Use the terminal instead for guaranteed renv activation**
+
+If you want to be **100% sure** that `renv` is activated, use the integrated terminal instead of the Knit button:
+
+```bash
+# Environment: VS Code integrated terminal (any OS)
+# This guarantees .Rprofile is read and renv is activated
+Rscript -e "rmarkdown::render('report.Rmd')"
+```
+
+The integrated terminal inherits the project's working directory, so `.Rprofile` is always read correctly.
+
+**💡 Pro tip: Configure the Knit button to use the active terminal**
+
+In VS Code settings, enable:
+
+```json
+# Environment: VS Code settings.json
+{
+  "r.alwaysUseActiveTerminal": true
+}
+```
+
+This tells the R extension to use the currently active R terminal (if one is open) instead of launching a new R process. If you have an R terminal open in the project root, `renv` will be active.
+
+### 28.6 Using the VS Code Integrated Terminal for R
 
 VS Code's integrated terminal (`Ctrl+`` ` or `View → Terminal`) is fully functional for running R commands.
 
@@ -736,7 +823,7 @@ Rscript -e "rmarkdown::render('report.Rmd', output_format = 'all')"
 Rscript -e "rmarkdown::render('report.Rmd', output_format = 'github_document')"
 ```
 
-### 28.6 Using the VS Code Terminal with renv
+### 28.7 Using the VS Code Terminal with renv
 
 The integrated terminal respects the project's `.Rprofile`, so `renv` is automatically activated when you run R from within the project directory.
 
@@ -761,7 +848,7 @@ Rscript -e "renv::snapshot()"
 Rscript -e "renv::status()"
 ```
 
-### 28.7 Setting Up VS Code Tasks for Automation
+### 28.8 Setting Up VS Code Tasks for Automation
 
 You can create VS Code tasks to automate rendering with a keyboard shortcut.
 
@@ -816,7 +903,7 @@ Create `.vscode/tasks.json` in your project:
 
 Then run a task via `Ctrl+Shift+P` → `Tasks: Run Task` → select the task.
 
-### 28.8 VS Code Workspace Settings for R Projects
+### 28.9 VS Code Workspace Settings for R Projects
 
 Create `.vscode/settings.json` in your project for consistent settings across collaborators:
 
@@ -839,7 +926,7 @@ Create `.vscode/settings.json` in your project for consistent settings across co
 }
 ```
 
-### 28.9 VS Code + Git Integration
+### 28.10 VS Code + Git Integration
 
 VS Code has built-in Git support:
 
@@ -850,7 +937,7 @@ VS Code has built-in Git support:
 
 This is especially useful for committing `renv.lock` after `renv::snapshot()`.
 
-### 28.10 Summary: VS Code vs RStudio for Reproducible R Projects
+### 28.11 Summary: VS Code vs RStudio for Reproducible R Projects
 
 | Feature | RStudio | VS Code |
 |---------|---------|---------|
