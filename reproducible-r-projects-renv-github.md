@@ -174,16 +174,42 @@ Goal:
 
 ## 5. Clone Project from GitHub
 
-### Option A — Terminal
+### Option A — Terminal (First Time)
 
 ```bash
 # Environment: Linux / macOS / Windows Git Bash terminal
 git clone REPO_URL
 ```
 
-### Option B — RStudio GUI
+### Option B — RStudio GUI (First Time)
 
 `File → New Project → Version Control → Git`
+
+### Option C — Update Existing Project (Already Cloned)
+
+If you already have the project folder from a previous clone and just need to update it with the latest changes from GitHub:
+
+```bash
+# Environment: Linux / macOS / Windows Git Bash terminal
+# Navigate into the existing project folder first
+cd path/to/existing/project
+git pull
+```
+
+Then restore any updated packages:
+
+```r
+# Environment: R console / RStudio console
+renv::restore()
+```
+
+**When to use this option:**
+
+- You already cloned the repository before and the folder exists locally
+- You want to get the latest `renv.lock` and code changes from collaborators
+- You are working on the same machine where the project was originally set up
+
+**Important:** If the `renv.lock` file was updated in the pull, run `renv::restore()` to synchronize your local package library with the new lockfile.
 
 ---
 
